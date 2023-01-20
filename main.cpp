@@ -6,7 +6,7 @@ int main() {
 
 	Parser parser;
 	parser.get_sentence();
-	parser.get_res();
+	parser.result();
 	parser.print_res();
 
 	return 0;

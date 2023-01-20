@@ -1,6 +1,14 @@
 #pragma once
 #include <iostream>
 
+
+/*	Грамматика
+	< O > :: = <SUM> | <MUL>
+	< SUM > :: = sum(<K>,<K>{,<K>})
+	< MUL > :: = mul(<K>,<K>{,<K>})
+	< K > :: = <O> | num
+*/
+
 enum {
 	SUM,	//sum
 	MUL,	//mul
@@ -18,11 +26,10 @@ public:
 	~Parser() {};
 
 	void get_sentence();
-	int scan();
-	void get_res();
+	void result();
 	void print_res();
 
-	std::string sent;
+	
 private:
 	FILE* file;
 
@@ -31,7 +38,13 @@ private:
 	int sym;
 	int res;
 
+	std::string sent;
+
+	int O();
 	int mul();
 	int sum();
-	int count();
+	int K();
+
+	int scan();
+	
 };

@@ -19,7 +19,6 @@ void Parser::get_sentence() {
 		sent += symbol;
 	symbol = fgetc(file);
 	} 
-
 };
 
 int Parser::scan() {
@@ -60,79 +59,91 @@ int Parser::scan() {
 	return END;
 };
 
-void Parser::get_res() {
+void Parser::result() {
 	sym = scan();
+	res = O();
+	sym = scan();
+	if (sym != END) {
+		cout << "Invalid input";
+		exit(-1);
+	}
+
+}
+
+int Parser::O() {
 	if (sym != SUM && sym != MUL) {
 		cout << "Invalid input";
 		exit(-1);
 	}
-	res = count();
+	int res_o = 0;
+	switch (sym) {
+	case (SUM):
+		res_o = sum();
+		break;
+	case (MUL):
+		res_o = mul();
+		break;
+	}
+return res_o;
+}
+
+int Parser::sum() {
+	sym = scan();
+	int res_sum = K();
+	int flg = 0;
+	while (sym == COMMA) {
+		sym = scan();
+		res_sum += K();
+		flg += 1;
+	}
+	if (sym != R_BRACE) {
+		cout << "Invalid input";
+		exit(-1);
+	}
+	if (flg < 1) {
+		cout << "Too few arguments!";
+		exit(-1);
+	}
+	return res_sum;
+}
+
+int Parser::mul() {
+	sym = scan();
+	int res_mul = K();
+	int flg = 0;
+	while (sym == COMMA) {
+		sym = scan();
+		res_mul *= K();
+		flg += 1;
+	}
+	if (sym != R_BRACE) {
+		cout << "Invalid input";
+		exit(-1);
+	}
+	if (flg < 1) {
+		cout << "Too few arguments!";
+		exit(-1);
+	}
+	return res_mul;
+}
+
+int Parser::K() {
+
+	switch (sym){
+
+		case (NUM): {
+			int res_k = val;
+			sym = scan();
+			return res_k;
+		}
+		default: {
+			int res_k = O();
+			sym = scan();
+			return res_k;
+		}
+	}
 }
 
 void Parser::print_res() {
 	cout << res;
-}
-
-int Parser::sum() {
-	int res_s = count();
-	int flg = 0;
-	while (sym == COMMA) {
-		sym = scan();
-		res_s += count();
-		flg += 1;
-	}
-	if (flg < 1) {
-		cout << "Too few arguments!";
-		exit(-1);
-	}
-	return res_s;
-}
-
-int Parser::mul() {
-	int res_s = count();
-	int flg = 0;
-	while (sym == COMMA) {
-		sym = scan();
-		res_s *= count();
-		flg += 1;
-	}
-	if (flg < 1) {
-		cout << "Too few arguments!";
-		exit(-1);
-	}
-	return res_s;
-}
-
-int Parser::count() {
-	switch (sym) {
-		case SUM: {
-			sym = scan();
-			int res_c = sum();
-			if (sym != R_BRACE) {
-				cout << "There is brace disbalance!";
-				exit(-1);
-			}
-			sym = scan();
-			return res_c;
-		}
-		case MUL: {
-			sym = scan();
-			int res_c = mul();
-			if (sym != R_BRACE) {
-				cout << "There is brace disbalance!";
-				exit(-1);
-			}
-			sym = scan();
-			return res_c;
-		}
-		case NUM: {
-			int res_c = val;
-			sym = scan();
-			return res_c;
-		}
-		default: {
-			cout << "Invalid input!";
-			exit(-1);
-		}
-	}
 }
