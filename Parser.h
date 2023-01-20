@@ -3,13 +3,14 @@
 
 
 /*	Грамматика
-	< O > :: = <SUM> | <MUL>
-	< SUM > :: = sum(<K>,<K>{,<K>})
-	< MUL > :: = mul(<K>,<K>{,<K>})
-	< K > :: = <O> | num
+* 
+	< O > :: = <FUNC> | num
+	< FUNC > :: = <F>(<K>,<K>{,<K>})
+	< K > :: = < O > 
 */
 
 enum {
+	FUNC,	// функция
 	SUM,	//sum
 	MUL,	//mul
 	COMMA,	// ,
@@ -35,12 +36,14 @@ private:
 
 	int i;
 	int val;
+	std::string function;
 	int sym;
 	int res;
 
 	std::string sent;
 
 	int O();
+	int func();
 	int mul();
 	int sum();
 	int K();

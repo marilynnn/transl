@@ -26,13 +26,19 @@ int Parser::scan() {
 	size_t len = sent.length();
 
 	if (i < len) {
-		if (sent[i] == 's' && sent[i + 1] == 'u' && sent[i + 2] == 'm' && sent[i + 3] == '(') {
-			i += 4;
-			return SUM;
-		}
-		else if (sent[i] == 'm' && sent[i + 1] == 'u' && sent[i + 2] == 'l' && sent[i + 3] == '(') {
-			i += 4;
-			return MUL;
+		if (sent[i] >= 'a' && sent[i] <= 'z') {
+			function = sent[i];
+			i++;
+			while (sent[i] >= 'a' && sent[i] <= 'z') {
+				function += sent[i];
+				i++;
+			}
+			if (sent[i] != '(') {
+				cout << "Invalid input";
+				exit(-1);
+			}
+			i++;
+			return FUNC;
 		}
 		else if (sent[i] == ',') {
 			i++;
@@ -71,20 +77,36 @@ void Parser::result() {
 }
 
 int Parser::O() {
-	if (sym != SUM && sym != MUL) {
+	if (sym != FUNC && sym != NUM) {
 		cout << "Invalid input";
 		exit(-1);
 	}
+
 	int res_o = 0;
 	switch (sym) {
-	case (SUM):
-		res_o = sum();
+	case (FUNC):
+		res_o = func();
 		break;
-	case (MUL):
-		res_o = mul();
+	case (NUM):
+		res_o = val;
 		break;
 	}
 return res_o;
+}
+
+int Parser::func() {
+	int res_func = 0;
+	if (function == "sum") {
+		res_func = sum();
+	}
+	else if (function == "mul"){
+		res_func = mul();
+	}
+	else {
+		cout << "Invalid input";
+		exit(-1);
+	}
+	return res_func;
 }
 
 int Parser::sum() {
@@ -128,20 +150,9 @@ int Parser::mul() {
 }
 
 int Parser::K() {
-
-	switch (sym){
-
-		case (NUM): {
-			int res_k = val;
-			sym = scan();
-			return res_k;
-		}
-		default: {
 			int res_k = O();
 			sym = scan();
 			return res_k;
-		}
-	}
 }
 
 void Parser::print_res() {
